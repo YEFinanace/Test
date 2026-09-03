@@ -1,0 +1,976 @@
+<title>Monthly Cash Balances 2026</title>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --page:        #f5f6f5;
+    --surface:     #ffffff;
+    --surface-2:   #fbfbfa;
+    --ink:         #12151a;
+    --ink-2:       #565c66;
+    --ink-muted:   #8b9199;
+    --hair:        #e3e5e2;
+    --hair-strong: #d3d6d2;
+    --accent:      #2a78d6;
+    --good:        #0ca30c;
+    --warn:        #b3720a;
+    --warn-bg:     #fdf1dd;
+    --closed-bg:   #eef0ee;
+    --closed-fg:   #6b7178;
+    --shadow:      0 1px 2px rgba(20,20,18,.04), 0 8px 24px -12px rgba(20,20,18,.12);
+    --c1: #2a78d6; --c2: #eb6834; --c3: #1baf7a; --c4: #eda100; --c5: #e87ba4; --c6: #008300; --c7: #7c5cff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:#0c0d0e; --surface:#17181b; --surface-2:#1c1e21; --ink:#f4f5f3; --ink-2:#b4b9c0; --ink-muted:#898781;
+      --hair:#2b2d2f; --hair-strong:#383b3e; --accent:#3987e5; --good:#0ca30c; --warn:#d99a24; --warn-bg:#2c2410;
+      --closed-bg:#1f2123; --closed-fg:#9096a0; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+      --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9b82ff;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:#0c0d0e; --surface:#17181b; --surface-2:#1c1e21; --ink:#f4f5f3; --ink-2:#b4b9c0; --ink-muted:#898781;
+    --hair:#2b2d2f; --hair-strong:#383b3e; --accent:#3987e5; --good:#0ca30c; --warn:#d99a24; --warn-bg:#2c2410;
+    --closed-bg:#1f2123; --closed-fg:#9096a0; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9b82ff;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--page); color:var(--ink); font-family:"Heebo","Segoe UI",Arial,sans-serif; font-size:14px; line-height:1.5; }
+  h1,h2,h3{ font-family:"Rubik","Heebo",sans-serif; text-wrap:balance; }
+  bdi{ unicode-bidi: isolate; }
+  .tab{ font-variant-numeric: tabular-nums; }
+  .wrap{ max-width:1220px; margin:0 auto; padding:28px 24px 64px; }
+
+  header{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; padding-bottom:20px; margin-bottom:24px; border-bottom:1px solid var(--hair); flex-wrap:wrap; }
+  .eyebrow{ font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--accent); text-transform:uppercase; margin:0 0 6px; }
+  header h1{ font-size:26px; font-weight:800; margin:0; letter-spacing:-.01em; }
+  .subtitle{ color:var(--ink-2); font-size:13.5px; margin-top:4px; }
+  .as-of{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2); background:var(--surface); border:1px solid var(--hair); border-radius:999px; padding:7px 14px; box-shadow:var(--shadow); white-space:nowrap; }
+  .as-of .dot{ width:7px; height:7px; border-radius:50%; background:var(--good); flex:none; }
+
+  .hero{ display:grid; grid-template-columns: 1.3fr 1fr; gap:16px; margin-bottom:28px; }
+  @media (max-width: 760px){ .hero{ grid-template-columns:1fr; } }
+  .hero-card{ background:var(--surface); border:1px solid var(--hair); border-radius:16px; box-shadow:var(--shadow); padding:26px 28px; display:flex; flex-direction:column; justify-content:center; gap:6px; }
+  .hero-label{ font-size:13px; color:var(--ink-2); font-weight:500; }
+  .hero-label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .hero-month-select{ font-family:inherit; font-size:12px; font-weight:600; color:var(--ink-2); background:var(--surface-2); border:1px solid var(--hair-strong); border-radius:8px; padding:4px 8px; cursor:pointer; }
+  .hero-month-select:hover{ border-color:var(--accent); color:var(--ink); }
+  .rate-input{ font-family:inherit; font-size:13px; width:76px; text-align:end; padding:4px 7px; border:1px solid var(--hair-strong); border-radius:6px; background:var(--surface-2); color:var(--ink); }
+  .rate-input:hover{ border-color:var(--accent); }
+  .rate-input:focus{ outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent); }
+  .hero-figure{ font-size:52px; font-weight:800; letter-spacing:-.02em; line-height:1.05; }
+  .hero-note{ font-size:12.5px; color:var(--ink-muted); }
+  .mini-stats{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .mini{ background:var(--surface); border:1px solid var(--hair); border-radius:16px; box-shadow:var(--shadow); padding:18px 20px; display:flex; flex-direction:column; gap:4px; justify-content:center; }
+  .mini-label{ font-size:12px; color:var(--ink-2); }
+  .mini-value{ font-size:22px; font-weight:700; }
+  .mini-sub{ font-size:11.5px; color:var(--ink-muted); }
+
+  section{ margin-bottom:32px; }
+  .dividend-pair{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; margin-bottom:32px; }
+  @media (max-width: 980px){ .dividend-pair{ grid-template-columns:1fr; } }
+  .sec-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; gap:12px; flex-wrap:wrap; }
+  .sec-head h2{ font-size:17px; font-weight:700; margin:0; }
+  .sec-head .hint{ font-size:12.5px; color:var(--ink-muted); }
+  .card{ background:var(--surface); border:1px solid var(--hair); border-radius:16px; box-shadow:var(--shadow); padding:22px 24px; }
+
+  .company-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+  @media (max-width: 900px){ .company-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width: 560px){ .company-grid{ grid-template-columns:1fr;} }
+  .company-card{ background:var(--surface); border:1px solid var(--hair); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .company-card::before{ content:""; position:absolute; inset-inline-start:0; top:0; bottom:0; width:4px; background:var(--bar-color); }
+  .company-card .name{ font-weight:700; font-size:14.5px; margin:0 0 2px; font-family:"Rubik",sans-serif; }
+  .company-card .subname{ font-size:11.5px; color:var(--ink-muted); margin-bottom:10px; }
+  .company-card .total{ font-size:23px; font-weight:800; letter-spacing:-.01em; }
+  .company-card .share{ font-size:11.5px; color:var(--ink-2); margin-top:2px; }
+  .company-card .accbar{ height:5px; border-radius:3px; background:var(--hair); margin-top:12px; overflow:hidden; }
+  .company-card .accbar > span{ display:block; height:100%; background:var(--bar-color); border-radius:3px; }
+
+  .chart-card{ padding:22px 24px 14px; }
+
+  .barrow{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--hair); }
+  .barrow:last-child{ border-bottom:none; }
+  .barrow .lbl{ width:150px; flex:none; font-size:13px; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .barrow .lbl .sw{ width:10px; height:10px; border-radius:3px; flex:none; background:var(--sw); }
+  .curr-track{ flex:1; height:16px; background:var(--surface-2); border-radius:4px; position:relative; }
+  .curr-fill{ position:absolute; inset-inline-start:0; top:0; bottom:0; border-radius:4px; background:var(--accent); }
+  .curr-fill:hover{ filter:brightness(1.1); }
+  .barrow .val{ width:120px; flex:none; text-align:end; font-size:13.5px; font-weight:700; }
+
+  .month-filter{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .month-chip{ font-family:inherit; font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; border:1px solid var(--hair-strong); background:var(--surface); color:var(--ink-2); cursor:pointer; transition:background .1s ease, color .1s ease, border-color .1s ease; }
+  .month-chip:hover{ border-color:var(--accent); color:var(--ink); }
+  .month-chip.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .month-chip.all{ font-weight:700; }
+
+  .tt{ position:fixed; pointer-events:none; z-index:50; background:var(--ink); color:var(--page); padding:9px 12px; border-radius:9px; font-size:12.5px; line-height:1.5; box-shadow:var(--shadow); opacity:0; transform:translateY(4px); transition:opacity .1s ease, transform .1s ease; max-width:260px; }
+  .tt.show{ opacity:1; transform:translateY(0); }
+  .tt .tt-title{ font-weight:700; font-size:12px; opacity:.7; margin-bottom:5px; text-transform:uppercase; letter-spacing:.03em; }
+  .tt-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+  .tt-row + .tt-row{ margin-top:3px; }
+  .tt-row .key-line{ display:inline-block; width:10px; height:2px; margin-inline-end:6px; vertical-align:middle; border-radius:1px; }
+  .tt-row .tt-val{ font-weight:700; }
+  .tt-row .tt-flag{ opacity:.65; font-size:11px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .table-scroll{ overflow-x:auto; border-radius:14px; border:1px solid var(--hair); background:var(--surface); box-shadow:var(--shadow); }
+  thead th{ text-align:end; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-muted); padding:11px 12px; border-bottom:1px solid var(--hair-strong); white-space:nowrap; background:var(--surface-2); position:sticky; top:0; }
+  thead th:nth-child(1), thead th:nth-child(2), thead th:nth-child(3){ text-align:start; }
+  tbody td{ padding:9px 12px; border-bottom:1px solid var(--hair); white-space:nowrap; text-align:end; }
+  tbody td:nth-child(1), tbody td:nth-child(2), tbody td:nth-child(3){ text-align:start; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:var(--surface-2); }
+  .co-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-inline-end:7px; vertical-align:middle; }
+  .cell-empty{ color:var(--ink-muted); }
+  .cell-unpaid{ color:#d03b3b; }
+  .cell-unpaid bdi{ color:#d03b3b; }
+  .cell-cumulative{ display:block; font-size:10.5px; font-weight:400; color:var(--ink-muted); margin-top:2px; }
+  .th-sub{ font-weight:400; opacity:.7; }
+  .cell-flag{ text-decoration:underline dotted var(--warn); text-decoration-thickness:1px; text-underline-offset:3px; cursor:help; }
+
+  .notes{ background:var(--surface); border:1px solid var(--hair); border-radius:14px; box-shadow:var(--shadow); padding:18px 22px; }
+  .notes h3{ font-size:13.5px; margin:0 0 10px; }
+  .notes ul{ margin:0; padding-inline-start:20px; display:flex; flex-direction:column; gap:7px; }
+  .notes li{ font-size:12.5px; color:var(--ink-2); }
+  .notes li .flag-word{ color:var(--warn); font-weight:600; }
+  .notes li .crit-word{ color:#d03b3b; font-weight:700; }
+
+  footer{ margin-top:36px; padding-top:16px; border-top:1px solid var(--hair); font-size:11.5px; color:var(--ink-muted); text-align:center; }
+
+  .gate-overlay{ position:fixed; inset:0; z-index:9999; background:var(--page); display:flex; align-items:center; justify-content:center; padding:20px; }
+  .gate-card{ background:var(--surface); border:1px solid var(--hair); border-radius:16px; box-shadow:var(--shadow); padding:32px 30px; width:100%; max-width:320px; text-align:center; }
+  .gate-card h2{ font-size:17px; margin:0 0 6px; }
+  .gate-card p.gate-sub{ font-size:12.5px; color:var(--ink-2); margin:0 0 18px; }
+  .gate-input{ font-family:inherit; font-size:16px; letter-spacing:.08em; text-align:center; width:100%; padding:10px 12px; border:1px solid var(--hair-strong); border-radius:8px; background:var(--surface-2); color:var(--ink); box-sizing:border-box; }
+  .gate-input:focus{ outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent); }
+  .gate-btn{ font-family:inherit; font-size:13.5px; font-weight:600; width:100%; margin-top:10px; padding:10px 12px; border:none; border-radius:8px; background:var(--accent); color:#fff; cursor:pointer; }
+  .gate-btn:hover{ filter:brightness(1.08); }
+  .gate-error{ font-size:12.5px; color:#d03b3b; margin:10px 0 0; }
+</style>
+
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <h2>Enter Access Code</h2>
+    <p class="gate-sub">This dashboard is restricted.</p>
+    <input type="password" inputmode="numeric" class="gate-input" id="gateInput" placeholder="Access code" autocomplete="off">
+    <button type="button" class="gate-btn" id="gateBtn">Enter</button>
+    <p class="gate-error" id="gateError" hidden>Incorrect code — try again.</p>
+  </div>
+</div>
+
+<div class="wrap" dir="ltr" lang="en">
+
+  <header>
+    <div>
+      <p class="eyebrow">Young Engineers Group · Finance Tracking</p>
+      <h1>Monthly Cash Balances — Jan–Aug 2026</h1>
+      <p class="subtitle" id="subtitleLine">6 companies · reconstructed month-end balances from real statements</p>
+    </div>
+    <div class="as-of"><span class="dot"></span> Latest: August 31, 2026</div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-card">
+      <div class="hero-label-row">
+        <span class="hero-label" id="heroLabel">Total cash, August 2026 (latest month)</span>
+        <select class="hero-month-select" id="heroMonthSelect" aria-label="Choose month"></select>
+      </div>
+      <span class="hero-figure tab" id="heroTotal">—</span>
+      <span class="hero-note">AgentWide / Mercury: only Jul–Aug 2026 are known — no statement for Jan–Jun</span>
+    </div>
+    <div class="mini-stats">
+      <div class="mini">
+        <span class="mini-label" id="topCompanyLabel">Revenue · YEH (Aug)</span>
+        <span class="mini-value tab" id="topCompany">—</span>
+        <span class="mini-sub" id="topCompanyShare">—</span>
+      </div>
+      <div class="mini">
+        <span class="mini-label">Data coverage</span>
+        <span class="mini-value tab">Jan–Aug</span>
+        <span class="mini-sub">Gaps = not enough data to show a number — see table &amp; notes</span>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Balance Overview</h2>
+      <span class="hint" id="dividendsHint">—</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Total Bank Balance<br>(Actual)</th>
+            <th>Dividends Paid<br>This Month · YEWLS</th>
+            <th>Dividends Paid<br>This Month · YEH<br><span class="th-sub">[Cumulative]</span></th>
+            <th>Dividends Planned<br>(Not Yet Paid) · YEWLS</th>
+            <th>Dividends Planned<br>(Not Yet Paid) · YEH</th>
+            <th>Total Cash After<br>Unpaid Dividends</th>
+          </tr>
+        </thead>
+        <tbody id="dividendsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="dividend-pair">
+    <div class="dividend-pair-item">
+      <div class="sec-head">
+        <h2>Dividends YEWLS — 2026</h2>
+        <span class="hint">Amir, Danny &amp; Naama (3 shareholders) · from the user's file — figures below are computed live from the ILS amount and rate, not pasted</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Monthly Dividend per<br>Shareholder (ILS)</th>
+              <th>Monthly Dividend per<br>Shareholder (USD)</th>
+              <th>Total Monthly Dividends (USD)<br>Amir, Danny &amp; Naama</th>
+              <th>USD/ILS<br>Exchange Rate</th>
+              <th>Total Quarterly<br>Dividends (USD)</th>
+            </tr>
+          </thead>
+          <tbody id="yewlsDividendsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dividend-pair-item">
+      <div class="sec-head">
+        <h2>Dividends YEH — 2026</h2>
+        <span class="hint">From the user's file — Profit and the quarterly Total Dividend are computed live from Revenue and Break-even Revenue, not pasted. Sep–Dec 2026 have no source figures yet — Revenue and Break-even Revenue are editable there.</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Revenue</th>
+              <th>Break-even<br>Revenue</th>
+              <th>Profit</th>
+              <th>Total Dividend<br>(Quarterly)</th>
+            </tr>
+          </thead>
+          <tbody id="yehDividendsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>By company — latest month</h2>
+      <span class="hint">August 2026, converted to USD</span>
+    </div>
+    <div class="company-grid" id="companyGrid"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Monthly detail by bank / account</h2>
+      <span class="hint" id="rowCountHint">—</span>
+    </div>
+    <div class="month-filter" id="monthFilter"></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr id="tableHeadRow">
+            <th>Company</th><th>Bank / account</th><th>Ccy</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Currency exposure — August 2026</h2>
+      <span class="hint">USD equivalent; native amount shown in the label</span>
+    </div>
+    <div class="card chart-card" id="currencyChart"></div>
+  </section>
+
+  <section>
+    <div class="notes">
+      <h3>Notes &amp; sources</h3>
+      <ul>
+        <li>Data reconstructed from real statements/ledgers uploaded to chat: Chase (CSV, full history), Revolut (per-account PDF statements, Jan–Sep), FIBI/הבינלאומי (Excel ledgers, Jan–Aug), Bank Hapoalim (full two-year ledger), PayPal, and — for Jan–Jul 2026 — the user's own bank reconciliation file (company/bank/month, already in USD), which superseded earlier partial statements for most accounts. Not connected to any live feed.</li>
+        <li><span class="flag-word">Jan–Jul 2026 figures for most accounts</span> now come from the user's reconciliation file rather than individual bank statements — this filled in PayPal (USD/CAD/GBP, ESF), Bank of Cyprus (USD/EUR, YE Holdings-CYP &amp; YE Wise Learning) for months that previously showed no data, and replaced a handful of earlier estimates. August 2026 is unchanged from before (that file has no August rows). Non-USD accounts were back-converted from the file's USD figures using this page's own monthly FX rates, so they may not exactly equal the account's real native-currency balance.</li>
+        <li><span class="flag-word">Two new accounts added</span> from the reconciliation file: <strong>FIBI - Pikadon (deposit)</strong> for YEDG and YE Holdings-ISL (Jan–Jun only, no Jul/Aug data), and a new company, <strong>AgentWide</strong> (Mercury account — $540 for Jul from the reconciliation file, $436.63 for Aug provided directly by the user; no data for Jan–Jun).</li>
+        <li><span class="flag-word">ALGOBRIX / Bank Hapoalim (USD), Jan–Apr:</span> the reconciliation file shows a flat $10,719.64 for Jan–Mar and $16,221.48 for Apr (identical to this account's ILS-native balance that month) — this looks like a possible data-entry mix-up in that file rather than a real balance, but it's shown as given since it wasn't independently verified. May onward matches the full Hapoalim ledger's FX-conversion story.</li>
+        <li><span class="flag-word">YE Holdings-ISL's FIBI USD deposit, July:</span> now shows $395.52 per the reconciliation file. This reopens an earlier conflict — the full FIBI ledger had shown $130.60 for July (after a $1,000 conversion on 13 Jul) — not independently re-resolved.</li>
+        <li><span class="flag-word">Chase (ESF), August:</span> uses $21,880.78, corrected by the user — supersedes an earlier figure ($18,517.48) that had backed out two Payoneer debits dated 8/31 which posted 9/1.</li>
+        <li><span class="flag-word">FX rates</span> vary by month: <strong>ILS</strong> uses Bank of Israel's official שער יציג for the last trading day of each month (Jan 3.1140 → Aug 2.9880 ₪/$, user-supplied). <strong>EUR/USD</strong> uses each month's average market rate — June (1.14) and July (1.15) corrected by the user; the rest are market averages (Feb–Aug confirmed; January has no confirmed monthly figure, so it's carried from February as a flagged estimate). <strong>GBP</strong> ($1.3112) and <strong>CAD</strong> ($0.6969) still use one constant rate for all 8 months — no monthly source was available for those.</li>
+        <li><span class="flag-word">ESF / Payoneer</span> ($2,885.24, all 8 months) is a fixed balance provided directly by the user — no transactions on this account, and not verified against a statement.</li>
+        <li><span class="flag-word">Bank naming:</span> the reconciliation file labels the FIBI accounts (YEDG, YE Holdings-ISL) as "Haben Leumi" — treated here as the same בינלאומי/FIBI accounts already tracked, since the balances match almost exactly, but this hasn't been explicitly confirmed.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>Built from statements and ledgers uploaded to chat · one-time reconstruction, not live-connected</footer>
+</div>
+
+<div class="tt" id="tooltip"></div>
+
+<script>
+// ================= Access gate (client-side only — not real security, just a basic entry check) =================
+(function(){
+  const CODE = "2026";
+  const STORAGE_KEY = "dashboardAccessGranted";
+  const overlay = document.getElementById("gateOverlay");
+  const input = document.getElementById("gateInput");
+  const btn = document.getElementById("gateBtn");
+  const err = document.getElementById("gateError");
+  let granted = false;
+  try { granted = sessionStorage.getItem(STORAGE_KEY) === "1"; } catch(e){}
+  if (granted){ overlay.style.display = "none"; }
+  function tryUnlock(){
+    if (input.value === CODE){
+      try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch(e){}
+      overlay.style.display = "none";
+    } else {
+      err.hidden = false;
+      input.value = "";
+      input.focus();
+    }
+  }
+  btn.addEventListener("click", tryUnlock);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") tryUnlock(); });
+  if (!granted) input.focus();
+})();
+
+const MONTHLY_TOTALS ={"months": ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"], "companies": {"ESF": {"totals": [145733.67, 218196.02, 294418.11, 265595.93, 256307.66, 316310.69, 238184.31, 214178.26], "partial": [false, false, false, false, false, false, false, false]}, "YE HOLDINGS - CYP": {"totals": [176754.63, 161150.04, 159191.39, 44805.92, 31936.73, 35981.91, 66285.08, 67267.25], "partial": [false, false, false, false, false, false, false, false]}, "YE Wise Learning": {"totals": [14099.33, 91501.62, 118888.88, 24263.18, 66209.6, 116034.95, 49023.23, 115403.63], "partial": [false, false, false, false, false, false, false, false]}, "YEDG": {"totals": [28423.23, 22118.45, 20446.3, 22683.9, 21792.44, 17686.55, 18061.77, 18284.14], "partial": [false, false, false, false, false, false, true, true]}, "YE HOLDINGS - ISL": {"totals": [21600.76, 11758.66, 21392.49, 27071.45, 23581.66, 20694.18, 13858.95, 14356.84], "partial": [false, false, false, false, false, false, true, true]}, "ALGOBRIX": {"totals": [39639.1, 25747.46, 17496.59, 21716.55, 9935.42, 8148.5, 5767.34, 6136.0], "partial": [false, false, false, false, false, false, false, false]}, "AgentWide": {"totals": [null, null, null, null, null, null, 540.0, 436.63], "partial": [false, false, false, false, false, false, false, false]}}};
+const ROWS = [{"company": "ESF", "bank": "Chase", "currency": "USD", "native": [31853.83, 78716.29, 70157.22, 58551.38, 39314.55, 28143.53, 31011.44, 21880.78], "usd": [31853.83, 78716.29, 70157.22, 58551.38, 39314.55, 28143.53, 31011.44, 21880.78], "note": "August corrected by the user to $21,880.78 (the last-posted-in-August balance) \u2014 supersedes the earlier $18,517.48 figure, which had backed out two Payoneer debits dated 8/31 that posted 9/1."}, {"company": "ESF", "bank": "Revolut (USD)", "currency": "USD", "native": [70595.19, 125372.35, 209464.18, 177649.31, 156199.23, 211296.75, 106946.25, 83912.51], "usd": [70595.19, 125372.35, 209464.18, 177649.31, 156199.23, 211296.75, 106946.25, 83912.51], "note": null}, {"company": "ESF", "bank": "Revolut (EUR)", "currency": "EUR", "native": [null, null, null, null, 13651.85, 13834.0, 13039.05, 12987.84], "usd": [null, null, null, null, 15946.28, 15770.76, 14994.91, 15051.0], "note": "Account opened ~20 May 2026"}, {"company": "ESF", "bank": "PayPal (USD)", "currency": "USD", "native": [30058.55, 943.61, 0, 14286.12, 30299.86, 46365.96, 70829.95, 78786.01], "usd": [30058.55, 943.61, 0.0, 14286.12, 30299.86, 46365.96, 70829.95, 78786.01], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "ESF", "bank": "PayPal (CAD)", "currency": "CAD", "native": [7293.53, 7254.33, 9597.47, 10042.99, 9569.19, 9617.26, 9407.12, 9509.46], "usd": [5082.86, 5055.54, 6688.48, 6998.96, 6668.77, 6702.27, 6555.82, 6627.14], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "ESF", "bank": "PayPal (GBP)", "currency": "GBP", "native": [4010.07, 3983.37, 3983.37, 3984.84, 3808.52, 3924.79, 3783.33, 3840.44], "usd": [5258.0, 5222.99, 5222.99, 5224.92, 4993.73, 5146.18, 4960.7, 5035.58], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "YE HOLDINGS - CYP", "bank": "Revolut (EUR)", "currency": "EUR", "native": [null, 0.0, 848.79, 7603.73, 44.43, 1690.01, 17547.1, 12514.96], "usd": [null, 0.0, 982.17, 8885.99, 51.9, 1926.61, 20179.16, 14503.0], "note": null}, {"company": "YE HOLDINGS - CYP", "bank": "Revolut (USD)", "currency": "USD", "native": [null, 0, 4083.4, 26848.93, 31243.57, 33482.63, 45861.14, 52764.25], "usd": [null, 0.0, 4083.4, 26848.93, 31243.57, 33482.63, 45861.14, 52764.25], "note": null}, {"company": "YE HOLDINGS - CYP", "bank": "Bank of Cyprus (EUR)", "currency": "EUR", "native": [3193.9, 7809.17, 4440.57, 3497.76, 223.64, 170.15, 21.37, 0.0], "usd": [3777.63, 9236.41, 5138.37, 4087.61, 261.23, 193.97, 24.58, 0.0], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "YE HOLDINGS - CYP", "bank": "Bank of Cyprus (USD)", "currency": "USD", "native": [172977, 151913.63, 148987.45, 4983.39, 380.03, 378.7, 220.2, 0.0], "usd": [172977.0, 151913.63, 148987.45, 4983.39, 380.03, 378.7, 220.2, 0.0], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "YE HOLDINGS - CYP", "bank": "Bank of Cyprus (ILS)", "currency": "ILS", "native": [null, null, null, null, null, null, null, 0.0], "usd": [null, null, null, null, null, null, null, 0.0], "note": "Account closed August 2026, no earlier statement provided"}, {"company": "YE Wise Learning", "bank": "Revolut (EUR)", "currency": "EUR", "native": [null, 0.0, 859.3, 795.66, 731.52, 17534.12, 7982.6, 6811.91], "usd": [null, 0.0, 994.33, 929.84, 854.46, 19988.9, 9179.99, 7894.0], "note": null}, {"company": "YE Wise Learning", "bank": "Revolut (USD)", "currency": "USD", "native": [null, 0, 26976.89, 19640.56, 64300.52, 95080.16, 38954.34, 107509.63], "usd": [null, 0.0, 26976.89, 19640.56, 64300.52, 95080.16, 38954.34, 107509.63], "note": null}, {"company": "YE Wise Learning", "bank": "Bank of Cyprus (EUR)", "currency": "EUR", "native": [4203.82, 3698.47, 3275.71, 2614.54, 357.25, 288.21, 218.76, 0.0], "usd": [4972.13, 4374.42, 3790.46, 3055.45, 417.29, 328.56, 251.57, 0.0], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "YE Wise Learning", "bank": "Bank of Cyprus (USD)", "currency": "USD", "native": [9127.2, 87127.2, 87127.2, 637.33, 637.33, 637.33, 637.33, 0.0], "usd": [9127.2, 87127.2, 87127.2, 637.33, 637.33, 637.33, 637.33, 0.0], "note": "Monthly detail from the user's reconciliation file (previously only partial statements were available)."}, {"company": "YE Wise Learning", "bank": "Bank of Cyprus (ILS)", "currency": "ILS", "native": [null, null, null, null, null, null, null, 0.0], "usd": [null, null, null, null, null, null, null, 0.0], "note": "Account closed August 2026, no earlier statement provided"}, {"company": "YEDG", "bank": "FIBI (ILS)", "currency": "ILS", "native": [25197.58, 16549.63, 12014.6, 6453.68, 12700.66, 755.27, 13648.82, 13622.82], "usd": [8091.7, 5352.4, 3815.37, 2075.14, 4114.24, 253.62, 4464.77, 4559.18], "note": null}, {"company": "YEDG", "bank": "FIBI (USD deposit)", "currency": "USD", "native": [13758.4, 13758.4, 13724.96, 13724.96, 13724.96, 13724.96, 13597.0, 13724.96], "usd": [13758.4, 13758.4, 13724.96, 13724.96, 13724.96, 13724.96, 13597.0, 13724.96], "note": null}, {"company": "YE HOLDINGS - ISL", "bank": "FIBI (ILS)", "currency": "ILS", "native": [20212.97, 14180.11, 18562.54, 14371.02, 24512.72, 17843.62, 41157.71, 42508.02], "usd": [6490.99, 4586.06, 5894.74, 4620.9, 7940.63, 5991.82, 13463.43, 14226.24], "note": null}, {"company": "YE HOLDINGS - ISL", "bank": "FIBI (USD deposit)", "currency": "USD", "native": [2024.61, 1203.81, 9730.75, 8747.83, 1264.77, 1217.97, 395.52, 130.6], "usd": [2024.61, 1203.81, 9730.75, 8747.83, 1264.77, 1217.97, 395.52, 130.6], "note": "Jun/Jul updated from the user's reconciliation file. Note: this reopens a prior conflict \u2014 the full FIBI ledger showed $130.60 for Jul (after a $1,000 conversion on 13 Jul), while the reconciliation file shows $395.52 for Jul. Per the user's instruction the reconciliation file's figure is used here; not independently re-verified against the ledger."}, {"company": "ALGOBRIX", "bank": "Bank Hapoalim (ILS)", "currency": "ILS", "native": [90055.29, 46466.07, 21340.64, 17089.7, 28449.11, 17881.97, 15430.83, 16184.07], "usd": [28919.46, 15027.82, 6776.95, 5495.07, 9215.78, 6004.69, 5047.7, 5416.36], "note": null}, {"company": "ALGOBRIX", "bank": "Bank Hapoalim (USD)", "currency": "USD", "native": [10719.64, 10719.64, 10719.64, 16221.48, 719.64, 2143.81, 719.64, 719.64], "usd": [10719.64, 10719.64, 10719.64, 16221.48, 719.64, 2143.81, 719.64, 719.64], "note": "Updated from the user's reconciliation file. Flag: that file's Jan-Mar figures ($10,719.64 flat) and Apr figure ($16,221.48, identical to this account's ILS-native balance that month) look like a possible data-entry mix-up in the source file \u2014 not verified against a bank statement. May ($719.64) matches the FX-conversion story from the full Hapoalim ledger; Jun/Jul are as given in the reconciliation file."}, {"company": "ESF", "bank": "Payoneer", "currency": "USD", "native": [2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24], "usd": [2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24, 2885.24], "note": "Fixed balance every month, per the user \u2014 no transactions on this account (not confirmed against a statement)."}, {"company": "YEDG", "bank": "FIBI - Pikadon (deposit)", "currency": "USD", "native": [6573.13, 3007.65, 2905.97, 6883.8, 3953.24, 3707.97, null, null], "usd": [6573.13, 3007.65, 2905.97, 6883.8, 3953.24, 3707.97, null, null], "note": "New account added from the user's reconciliation file (labeled \"Haben Leumi - Pikadon\" there). Currency shown is USD directly, as given in that file's Balance(USD) column \u2014 the deposit's native currency was not specified, so no FX back-conversion was applied here. No data before Jan or after Jun 2026."}, {"company": "YE HOLDINGS - ISL", "bank": "FIBI - Pikadon (deposit)", "currency": "USD", "native": [13085.16, 5968.79, 5767.0, 13702.72, 14376.26, 13484.39, null, null], "usd": [13085.16, 5968.79, 5767.0, 13702.72, 14376.26, 13484.39, null, null], "note": "New account added from the user's reconciliation file (labeled \"Haben Leumi - Pikadon\" there). Currency shown is USD directly, as given in that file's Balance(USD) column \u2014 the deposit's native currency was not specified, so no FX back-conversion was applied here. No data before Jan or after Jun 2026."}, {"company": "AgentWide", "bank": "Mercury", "currency": "USD", "native": [null, null, null, null, null, null, 540, 436.63], "usd": [null, null, null, null, null, null, 540.0, 436.63], "note": "Two data points from the user: Jul 2026 ($540) from the reconciliation file, Aug 2026 ($436.63) provided directly. No statement for Jan\u2013Jun."}];
+
+const COMPANIES = [
+  { key:"ESF",               name:"ESF",              sub:"E2 Young Engineers Franchising",   color:"var(--c1)" },
+  { key:"YE HOLDINGS - CYP", name:"YE Holdings · CYP", sub:"Young Engineers Holdings, Cyprus",  color:"var(--c2)" },
+  { key:"YE Wise Learning",  name:"YE Wise Learning",  sub:"YE Wise Learning Solutions Ltd",    color:"var(--c3)" },
+  { key:"ALGOBRIX",          name:"ALGOBRIX",          sub:"Algobrix Ltd",                      color:"var(--c4)" },
+  { key:"YEDG",               name:"YEDG",              sub:"Young Engineers Decade Group",      color:"var(--c5)" },
+  { key:"YE HOLDINGS - ISL", name:"YE Holdings · ISL", sub:"Young Engineers Holdings, Israel",  color:"var(--c6)" },
+  { key:"AgentWide",         name:"AgentWide",         sub:"AgentWide",                         color:"var(--c7)" },
+];
+const COMPANY_MAP = Object.fromEntries(COMPANIES.map(c => [c.key, c]));
+const MONTH_LABELS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
+const CUR_SYMBOL = { USD:"$", EUR:"€", GBP:"£", CAD:"CA$", ILS:"₪" };
+
+function fmtUSD(v, opts={}){
+  if (v === null || v === undefined) return "–";
+  const sign = v < 0 ? "-" : "";
+  return sign + "$" + Math.abs(v).toLocaleString("en-US", { maximumFractionDigits: opts.cents ? 2 : 0, minimumFractionDigits: opts.cents ? 2 : 0 });
+}
+function fmtNative(v, cur){
+  if (v === null || v === undefined) return "–";
+  const sym = CUR_SYMBOL[cur] || "";
+  return sym + v.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+}
+
+// ---- tooltip ----
+const tt = document.getElementById("tooltip");
+function showTT(evt, html){ tt.innerHTML = html; tt.classList.add("show"); moveTT(evt); }
+function moveTT(evt){
+  const pad = 14; let x = evt.clientX + pad, y = evt.clientY + pad;
+  const w = 260, h = 140;
+  if (x + w > window.innerWidth) x = evt.clientX - w - pad;
+  if (y + h > window.innerHeight) y = evt.clientY - h - pad;
+  tt.style.left = x + "px"; tt.style.top = y + "px";
+}
+function hideTT(){ tt.classList.remove("show"); }
+
+// ================= Hero + mini stats (selectable month) =================
+const augIdx = 7;
+function renderHero(idx){
+  let total = 0;
+  COMPANIES.forEach(c => {
+    const v = MONTHLY_TOTALS.companies[c.key].totals[idx];
+    if (v !== null){ total += v; }
+  });
+  const monthFull = ["January","February","March","April","May","June","July","August"][idx];
+  const suffix = idx === augIdx ? " (latest month)" : "";
+  document.getElementById("heroLabel").textContent = `Total cash, ${monthFull} 2026${suffix}`;
+  document.getElementById("heroTotal").innerHTML = total === 0 && COMPANIES.every(c => MONTHLY_TOTALS.companies[c.key].totals[idx] === null)
+    ? "No data" : "<bdi>" + fmtUSD(total) + "</bdi>";
+
+  // Revenue mini-stat: pulled from the same month's row in the Dividends YEH — 2026 table (idx matches Jan=0..Aug=7 directly).
+  document.getElementById("topCompanyLabel").textContent = `Revenue · YEH (${MONTH_LABELS[idx]})`;
+  const revenue = yehRows[idx] ? yehRows[idx].revenue : null;
+  if (revenue === null || revenue === undefined){
+    document.getElementById("topCompany").textContent = "—";
+    document.getElementById("topCompanyShare").textContent = "No Revenue figure for this month yet";
+  } else {
+    document.getElementById("topCompany").innerHTML = "<bdi>" + fmtUSD(revenue) + "</bdi>";
+    document.getElementById("topCompanyShare").textContent = "From the Dividends YEH — 2026 table";
+  }
+}
+const heroMonthSelect = document.getElementById("heroMonthSelect");
+MONTH_LABELS.forEach((m, i) => {
+  const opt = document.createElement("option"); opt.value = i; opt.textContent = m + " 2026";
+  if (i === augIdx) opt.selected = true;
+  heroMonthSelect.appendChild(opt);
+});
+heroMonthSelect.addEventListener("change", () => renderHero(Number(heroMonthSelect.value)));
+
+// ================= Dividends YEWLS 2026 data (computed first — Balance Overview links to it) =================
+// Source inputs: ILS per shareholder and the USD/ILS rate used that month. Everything else is derived.
+const YEWLS_DIVIDENDS = [
+  { m: "Jan", ils: 70000, rate: 3.173 },
+  { m: "Feb", ils: 70000, rate: 3.173 },
+  { m: "Mar", ils: 70000, rate: 3.173 },
+  { m: "Apr", ils: 54000, rate: 2.8208 },
+  { m: "May", ils: 54000, rate: 2.9425 },
+  { m: "Jun", ils: 54000, rate: 3 },
+  { m: "Jul", ils: 65000, rate: 3.061 },
+  { m: "Aug", ils: 65000, rate: 2.988 },
+  { m: "Sep", ils: 65000, rate: 3 },
+  { m: "Oct", ils: 59000, rate: 3 },
+  { m: "Nov", ils: 59000, rate: 3 },
+  { m: "Dec", ils: 59000, rate: 3 },
+];
+const YEWLS_SHAREHOLDERS = 3;
+const yewlsRows = YEWLS_DIVIDENDS.map(r => ({ ...r }));
+function computeYewls(){
+  yewlsRows.forEach(row => {
+    row.perShareholderUSD = row.ils / row.rate;
+    row.totalMonthlyUSD = row.perShareholderUSD * YEWLS_SHAREHOLDERS;
+  });
+  // quarterly total shown on the first month of each quarter = sum of that quarter's 3 monthly totals
+  yewlsRows.forEach((row, i) => {
+    row.totalQuarterlyUSD = (i % 3 === 0) ? yewlsRows[i].totalMonthlyUSD + yewlsRows[i+1].totalMonthlyUSD + yewlsRows[i+2].totalMonthlyUSD : null;
+  });
+}
+computeYewls();
+function fmtILS(v){ return "₪" + v.toLocaleString("en-US", { maximumFractionDigits: 0 }); }
+
+// ================= Dividends YEH 2026 data (computed here too — Balance Overview links to it) =================
+// Profit is taken directly from the user's file, not derived — for Jul it does not equal Revenue minus
+// Break-even Revenue (10,601.77 vs 10,812.11), so the source evidently applies its own adjustment there.
+const YEH_DIVIDENDS = [
+  { m: "Jan", revenue: 234411.6,  breakeven: 244366.6,  profit: -9955     },
+  { m: "Feb", revenue: 305810.08, breakeven: 269889.08, profit: 35921     },
+  { m: "Mar", revenue: 355944.05, breakeven: 287532.05, profit: 68412     },
+  { m: "Apr", revenue: 225898,    breakeven: 241501,    profit: -15603    },
+  { m: "May", revenue: 236329.4,  breakeven: 245483.4,  profit: -9154     },
+  { m: "Jun", revenue: 313641,    breakeven: 272471,    profit: 41170     },
+  { m: "Jul", revenue: 263854.98, breakeven: 253042.87, profit: 10601.77  },
+  { m: "Aug", revenue: 264544.19, breakeven: 254233.63, profit: 10310.56  },
+  { m: "Sep", revenue: null,      breakeven: null,      profit: null      },
+  { m: "Oct", revenue: null,      breakeven: null,      profit: null      },
+  { m: "Nov", revenue: null,      breakeven: null,      profit: null      },
+  { m: "Dec", revenue: null,      breakeven: null,      profit: null      },
+];
+const yehRows = YEH_DIVIDENDS.map(r => ({ ...r }));
+// Sep-Dec 2026 have no source figures yet — editable so the user can fill them in as they become known.
+const YEH_EDITABLE = new Set([8, 9, 10, 11]);
+function computeYehQuarterlyTotals(){
+  yehRows.forEach((row, i) => {
+    if (i % 3 === 0){
+      const quarter = yehRows.slice(i, i + 3);
+      const known = quarter.filter(r => r.profit !== null);
+      row.totalDividend = known.length ? known.reduce((s, r) => s + r.profit, 0) : 0;
+    } else {
+      row.totalDividend = null;
+    }
+  });
+}
+computeYehQuarterlyTotals();
+renderHero(augIdx);
+
+// ================= Dividends / Balance Overview (extends past Aug 2026 for scheduled dividend payments) =================
+const MONTH_NAMES_FULL = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function monthLabel(ym){ const [y, m] = ym.split("-"); return MONTH_NAMES_FULL[parseInt(m, 10) - 1] + " " + y; }
+const DIVIDEND_MONTHS = [...MONTHLY_TOTALS.months, "2026-09", "2026-10", "2026-11", "2026-12", "2027-01"];
+// Each quarter's total (from the YEWLS table below) is paid the month after that quarter ends.
+const YEWLS_QUARTER_LINK = { "2026-04": 0, "2026-07": 1, "2026-10": 2, "2027-01": 3 };
+// Same pattern for YEH: Q1 (Jan-Mar) paid in Apr, Q2 (Apr-Jun) paid in Jul, Q3 (Jul-Sep) paid in Oct, Q4 (Oct-Dec) paid in Jan 2027.
+const YEH_QUARTER_LINK = { "2026-04": 0, "2026-07": 1, "2026-10": 2, "2027-01": 3 };
+const DIVIDENDS = {
+  "2026-01": { paidYEWLS: 171347.67, paidYEH: 107490, plannedYEWLS: null, plannedYEH: null },
+  "2026-02": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-03": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-04": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-05": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-06": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-07": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-08": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-09": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-10": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-11": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2026-12": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+  "2027-01": { paidYEWLS: null, paidYEH: null, plannedYEWLS: null, plannedYEH: null },
+};
+function getPaidYEWLS(m){
+  if (YEWLS_QUARTER_LINK.hasOwnProperty(m)) return yewlsRows[YEWLS_QUARTER_LINK[m] * 3].totalQuarterlyUSD;
+  const d = DIVIDENDS[m];
+  return d ? d.paidYEWLS : null;
+}
+function getPaidYEH(m){
+  if (YEH_QUARTER_LINK.hasOwnProperty(m)) return yehRows[YEH_QUARTER_LINK[m] * 3].totalDividend;
+  const d = DIVIDENDS[m];
+  return d ? d.paidYEH : null;
+}
+// Last month with actual bank-balance data — a dividend amount linked to a month after this hasn't
+// actually been paid yet, so it belongs in the "Planned (Not Yet Paid)" columns, not "Paid This Month".
+const PAID_CUTOFF_MONTH = "2026-08";
+// From July 2026 onward, the Planned (Not Yet Paid) columns pull that month's own row from the
+// YEWLS/YEH per-month tables below (not a quarterly lump sum) — independent of the Paid columns above.
+const PLANNED_MONTHLY_START = "2026-07";
+function getPlannedYEWLS(m){
+  if (m >= PLANNED_MONTHLY_START && m.startsWith("2026-")){
+    const idx = parseInt(m.slice(5), 10) - 1;
+    if (idx >= 0 && idx < yewlsRows.length) return yewlsRows[idx].totalMonthlyUSD;
+  }
+  const d = DIVIDENDS[m];
+  return d ? d.plannedYEWLS : null;
+}
+function getPlannedYEH(m){
+  if (m >= PLANNED_MONTHLY_START && m.startsWith("2026-")){
+    const idx = parseInt(m.slice(5), 10) - 1;
+    if (idx >= 0 && idx < yehRows.length) return yehRows[idx].profit;
+  }
+  const d = DIVIDENDS[m];
+  return d ? d.plannedYEH : null;
+}
+function splitPaidPlanned(m){
+  const rawYEWLS = getPaidYEWLS(m);
+  const rawYEH = getPaidYEH(m);
+  const future = m > PAID_CUTOFF_MONTH;
+  return {
+    paidYEWLS: future ? null : rawYEWLS,
+    paidYEH: future ? null : rawYEH,
+    plannedYEWLS: getPlannedYEWLS(m),
+    plannedYEH: getPlannedYEH(m),
+  };
+}
+function monthGrandTotal(idx){
+  if (idx >= MONTHLY_TOTALS.months.length) return null; // no bank-balance data past Aug 2026
+  let total = null;
+  COMPANIES.forEach(c => {
+    const v = MONTHLY_TOTALS.companies[c.key].totals[idx];
+    if (v !== null){ total = (total || 0) + v; }
+  });
+  return total;
+}
+function setCell(bdi, td, val, highlightUnpaid){
+  if (val === null || val === undefined){
+    bdi.textContent = "–"; td.classList.add("cell-empty");
+    if (highlightUnpaid) td.classList.remove("cell-unpaid");
+  } else {
+    bdi.textContent = fmtUSD(val); td.classList.remove("cell-empty");
+    if (highlightUnpaid) td.classList.add("cell-unpaid");
+  }
+}
+const UNPAID_REF_KEYS = new Set(["plannedYEWLS", "plannedYEH"]);
+// Cumulative YEH dividends paid to date, shown in brackets under each Paid This Month · YEH figure.
+// Opening balance: $215,000 paid during 2025, before this tracker starts.
+const YEH_CUMULATIVE_OPENING = 215000;
+function computeYehCumulative(){
+  let running = YEH_CUMULATIVE_OPENING;
+  return DIVIDEND_MONTHS.map(m => {
+    const paidYEH = splitPaidPlanned(m).paidYEH;
+    if (paidYEH !== null) running += paidYEH;
+    return { hasPaid: paidYEH !== null, running };
+  });
+}
+// Cumulative unpaid dividends: each month's own Planned amount keeps adding to a running total
+// (nothing in this model ever moves out of "not yet paid"), so Total Cash After Unpaid Dividends
+// must subtract the full running total to date, not just that month's own Planned figure.
+function computeUnpaidCumulative(){
+  let running = 0;
+  return DIVIDEND_MONTHS.map(m => {
+    const { plannedYEWLS, plannedYEH } = splitPaidPlanned(m);
+    if (plannedYEWLS !== null) running += plannedYEWLS;
+    if (plannedYEH !== null) running += plannedYEH;
+    return running;
+  });
+}
+const divBody = document.getElementById("dividendsBody");
+const boRefs = [];
+const boActual = DIVIDEND_MONTHS.map((m, i) => monthGrandTotal(i));
+const boYehCumSpans = [];
+const boUnpaidCumulativeInit = computeUnpaidCumulative();
+DIVIDEND_MONTHS.forEach((m, i) => {
+  const actual = boActual[i];
+  const { paidYEWLS, paidYEH, plannedYEWLS, plannedYEH } = splitPaidPlanned(m);
+  const after = actual === null ? null : actual - boUnpaidCumulativeInit[i];
+  const tr = document.createElement("tr");
+  const monthTd = document.createElement("td");
+  monthTd.className = "tab"; monthTd.textContent = monthLabel(m);
+  tr.appendChild(monthTd);
+  const cellDefs = [actual, paidYEWLS, paidYEH, plannedYEWLS, plannedYEH, after];
+  const rowRefs = {};
+  const refKeys = ["actual", "paidYEWLS", "paidYEH", "plannedYEWLS", "plannedYEH", "after"];
+  cellDefs.forEach((val, ci) => {
+    const td = document.createElement("td"); td.className = "num tab";
+    const bdiV = document.createElement("bdi");
+    if (val === null || val === undefined){
+      bdiV.textContent = "–"; td.classList.add("cell-empty");
+    } else {
+      bdiV.textContent = fmtUSD(val);
+      if (UNPAID_REF_KEYS.has(refKeys[ci])) td.classList.add("cell-unpaid");
+    }
+    td.appendChild(bdiV);
+    tr.appendChild(td);
+    rowRefs[refKeys[ci]] = { bdi: bdiV, td };
+  });
+  boRefs.push(rowRefs);
+  let cumSpan = null;
+  if (paidYEH !== null){
+    cumSpan = document.createElement("span");
+    cumSpan.className = "cell-cumulative tab";
+    rowRefs.paidYEH.td.appendChild(cumSpan);
+  }
+  boYehCumSpans.push(cumSpan);
+  divBody.appendChild(tr);
+});
+function refreshYehCumulativeDisplay(){
+  const cumulative = computeYehCumulative();
+  cumulative.forEach((c, i) => {
+    const span = boYehCumSpans[i];
+    if (span) span.textContent = "[" + fmtUSD(c.running) + "]";
+  });
+}
+refreshYehCumulativeDisplay();
+function refreshBalanceOverviewMonth(m, unpaidCumulative){
+  const i = DIVIDEND_MONTHS.indexOf(m);
+  if (i === -1) return;
+  const actual = boActual[i];
+  const { paidYEWLS, paidYEH, plannedYEWLS, plannedYEH } = splitPaidPlanned(m);
+  const after = actual === null ? null : actual - unpaidCumulative[i];
+  const refs = boRefs[i];
+  setCell(refs.paidYEWLS.bdi, refs.paidYEWLS.td, paidYEWLS);
+  setCell(refs.paidYEH.bdi, refs.paidYEH.td, paidYEH);
+  setCell(refs.plannedYEWLS.bdi, refs.plannedYEWLS.td, plannedYEWLS, true);
+  setCell(refs.plannedYEH.bdi, refs.plannedYEH.td, plannedYEH, true);
+  setCell(refs.after.bdi, refs.after.td, after);
+}
+function refreshBalanceOverviewYEWLS(){
+  const unpaidCumulative = computeUnpaidCumulative();
+  DIVIDEND_MONTHS.forEach(m => refreshBalanceOverviewMonth(m, unpaidCumulative));
+  refreshYehCumulativeDisplay();
+}
+function refreshBalanceOverviewYEH(){
+  const unpaidCumulative = computeUnpaidCumulative();
+  DIVIDEND_MONTHS.forEach(m => refreshBalanceOverviewMonth(m, unpaidCumulative));
+  refreshYehCumulativeDisplay();
+}
+document.getElementById("dividendsHint").textContent =
+  "Extends past Aug 2026 for scheduled dividend payments — no bank-balance data beyond Aug 2026, so Actual/After are blank for those months. Dividends Paid This Month (YEWLS/YEH) are quarterly totals linked live to Apr, Jul, Oct 2026 and Jan 2027 (only counted if the month is Aug 2026 or earlier, i.e. Apr and Jul — Oct and Jan 2027 haven't actually happened yet). The bracketed figure under each YEH paid amount is the cumulative total paid to date, starting from a $215,000 opening balance paid during 2025. Dividends Planned (Not Yet Paid) show each month's own row from the Dividends YEWLS/YEH tables below, from Jul 2026 onward — editing a rate or Revenue/Break-even there updates the matching month here automatically. Total Cash After Unpaid Dividends = Actual − the running cumulative total of all Planned (not yet paid) amounts to date (YEWLS + YEH, added up from Jul 2026 onward, not just that month's own figure).";
+
+const yewlsBody = document.getElementById("yewlsDividendsBody");
+const yewlsCellRefs = [];
+const yewlsQuarterRefs = [];
+yewlsRows.forEach((row, i) => {
+  const tr = document.createElement("tr");
+  const monthTd = document.createElement("td"); monthTd.className = "tab"; monthTd.textContent = row.m + " 2026";
+  tr.appendChild(monthTd);
+
+  const ilsTd = document.createElement("td"); ilsTd.className = "num tab";
+  const ilsBdi = document.createElement("bdi"); ilsBdi.textContent = fmtILS(row.ils);
+  ilsTd.appendChild(ilsBdi); tr.appendChild(ilsTd);
+
+  const usdTd = document.createElement("td"); usdTd.className = "num tab";
+  const usdBdi = document.createElement("bdi"); usdBdi.textContent = fmtUSD(row.perShareholderUSD);
+  usdTd.appendChild(usdBdi); tr.appendChild(usdTd);
+
+  const totMonthTd = document.createElement("td"); totMonthTd.className = "num tab";
+  const totMonthBdi = document.createElement("bdi"); totMonthBdi.textContent = fmtUSD(row.totalMonthlyUSD);
+  totMonthTd.appendChild(totMonthBdi); tr.appendChild(totMonthTd);
+
+  const rateTd = document.createElement("td"); rateTd.className = "num tab";
+  const rateInput = document.createElement("input");
+  rateInput.type = "number"; rateInput.step = "0.0001"; rateInput.min = "0.0001";
+  rateInput.className = "rate-input tab"; rateInput.value = row.rate;
+  rateInput.setAttribute("aria-label", row.m + " 2026 USD/ILS exchange rate");
+  rateInput.addEventListener("input", () => {
+    const v = parseFloat(rateInput.value);
+    if (v > 0) { row.rate = v; computeYewls(); refreshYewlsDisplay(); refreshBalanceOverviewYEWLS(); }
+  });
+  rateTd.appendChild(rateInput); tr.appendChild(rateTd);
+
+  if (i % 3 === 0){
+    const totQuarterTd = document.createElement("td"); totQuarterTd.className = "num tab"; totQuarterTd.rowSpan = 3;
+    totQuarterTd.style.verticalAlign = "middle"; totQuarterTd.style.background = "var(--surface-2)"; totQuarterTd.style.fontWeight = "600";
+    const totQuarterBdi = document.createElement("bdi");
+    totQuarterTd.appendChild(totQuarterBdi); tr.appendChild(totQuarterTd);
+    yewlsQuarterRefs.push({ totQuarterBdi, totQuarterTd });
+  }
+
+  yewlsBody.appendChild(tr);
+  yewlsCellRefs.push({ usdBdi, totMonthBdi });
+});
+
+const yewlsTotalRow = document.createElement("tr"); yewlsTotalRow.style.fontWeight = "700";
+const yewlsTotalMonth = document.createElement("td"); yewlsTotalMonth.className = "tab"; yewlsTotalMonth.textContent = "Total";
+yewlsTotalRow.appendChild(yewlsTotalMonth);
+const totalILSTd = document.createElement("td"); totalILSTd.className = "num tab";
+const totalILSBdi = document.createElement("bdi"); totalILSBdi.textContent = fmtILS(yewlsRows.reduce((s, r) => s + r.ils, 0));
+totalILSTd.appendChild(totalILSBdi); yewlsTotalRow.appendChild(totalILSTd);
+const totalPerShareholderTd = document.createElement("td"); totalPerShareholderTd.className = "num tab";
+const totalPerShareholderBdi = document.createElement("bdi");
+totalPerShareholderTd.appendChild(totalPerShareholderBdi); yewlsTotalRow.appendChild(totalPerShareholderTd);
+const totalMonthlyTd = document.createElement("td"); totalMonthlyTd.className = "num tab";
+const totalMonthlyBdi = document.createElement("bdi");
+totalMonthlyTd.appendChild(totalMonthlyBdi); yewlsTotalRow.appendChild(totalMonthlyTd);
+const totalRateTd = document.createElement("td"); totalRateTd.className = "num tab cell-empty";
+const totalRateBdi = document.createElement("bdi"); totalRateBdi.textContent = "–";
+totalRateTd.appendChild(totalRateBdi); yewlsTotalRow.appendChild(totalRateTd);
+const totalQuarterlyTd = document.createElement("td"); totalQuarterlyTd.className = "num tab";
+const totalQuarterlyBdi = document.createElement("bdi");
+totalQuarterlyTd.appendChild(totalQuarterlyBdi); yewlsTotalRow.appendChild(totalQuarterlyTd);
+yewlsBody.appendChild(yewlsTotalRow);
+
+function refreshYewlsDisplay(){
+  yewlsRows.forEach((row, i) => {
+    const refs = yewlsCellRefs[i];
+    refs.usdBdi.textContent = fmtUSD(row.perShareholderUSD);
+    refs.totMonthBdi.textContent = fmtUSD(row.totalMonthlyUSD);
+  });
+  yewlsQuarterRefs.forEach((refs, q) => {
+    refs.totQuarterBdi.textContent = fmtUSD(yewlsRows[q * 3].totalQuarterlyUSD);
+  });
+  const totalMonthlyUSDSum = yewlsRows.reduce((s, r) => s + r.totalMonthlyUSD, 0);
+  totalPerShareholderBdi.textContent = fmtUSD(yewlsRows.reduce((s, r) => s + r.perShareholderUSD, 0));
+  totalMonthlyBdi.textContent = fmtUSD(totalMonthlyUSDSum);
+  totalQuarterlyBdi.textContent = fmtUSD(totalMonthlyUSDSum);
+}
+refreshYewlsDisplay();
+
+// ================= Dividends YEH 2026 rendering (data computed earlier, before Balance Overview) =================
+const yehBody = document.getElementById("yehDividendsBody");
+const yehProfitRefs = [];
+const yehQuarterRefs = [];
+function numOrNull(v){ return (v === "" || v === null || v === undefined || isNaN(v)) ? null : parseFloat(v); }
+yehRows.forEach((row, i) => {
+  const tr = document.createElement("tr");
+  const monthTd = document.createElement("td"); monthTd.className = "tab"; monthTd.textContent = row.m + " 2026";
+  tr.appendChild(monthTd);
+
+  if (YEH_EDITABLE.has(i)){
+    ["revenue", "breakeven"].forEach(field => {
+      const td = document.createElement("td"); td.className = "num tab";
+      const input = document.createElement("input");
+      input.type = "number"; input.step = "0.01"; input.className = "rate-input tab";
+      input.placeholder = "–";
+      if (row[field] !== null) input.value = row[field];
+      input.setAttribute("aria-label", row.m + " 2026 " + (field === "revenue" ? "Revenue" : "Break-even Revenue"));
+      input.addEventListener("input", () => {
+        row[field] = numOrNull(input.value);
+        row.profit = (row.revenue === null || row.breakeven === null) ? null : row.revenue - row.breakeven;
+        refreshYehDisplay();
+        refreshBalanceOverviewYEH();
+      });
+      td.appendChild(input); tr.appendChild(td);
+    });
+  } else {
+    [row.revenue, row.breakeven].forEach(val => {
+      const td = document.createElement("td"); td.className = "num tab";
+      const bdiV = document.createElement("bdi");
+      if (val === null || val === undefined){ bdiV.textContent = "–"; td.classList.add("cell-empty"); }
+      else { bdiV.textContent = fmtUSD(val); }
+      td.appendChild(bdiV);
+      tr.appendChild(td);
+    });
+  }
+
+  const profitTd = document.createElement("td"); profitTd.className = "num tab";
+  const profitBdi = document.createElement("bdi");
+  if (row.profit === null){ profitBdi.textContent = "–"; profitTd.classList.add("cell-empty"); }
+  else { profitBdi.textContent = fmtUSD(row.profit); }
+  profitTd.appendChild(profitBdi); tr.appendChild(profitTd);
+  yehProfitRefs.push({ profitBdi, profitTd });
+
+  if (i % 3 === 0){
+    const totTd = document.createElement("td"); totTd.className = "num tab"; totTd.rowSpan = 3;
+    totTd.style.verticalAlign = "middle"; totTd.style.background = "var(--surface-2)"; totTd.style.fontWeight = "600";
+    const totBdi = document.createElement("bdi"); totBdi.textContent = fmtUSD(row.totalDividend);
+    totTd.appendChild(totBdi); tr.appendChild(totTd);
+    yehQuarterRefs.push({ totBdi });
+  }
+  yehBody.appendChild(tr);
+});
+const yehTotalRow = document.createElement("tr"); yehTotalRow.style.fontWeight = "700";
+const yehTotalMonth = document.createElement("td"); yehTotalMonth.className = "tab"; yehTotalMonth.textContent = "Total";
+yehTotalRow.appendChild(yehTotalMonth);
+const yehTotalCells = [];
+[0, 0, 0, 0].forEach(() => {
+  const td = document.createElement("td"); td.className = "num tab";
+  const bdiV = document.createElement("bdi");
+  td.appendChild(bdiV); yehTotalRow.appendChild(td);
+  yehTotalCells.push(bdiV);
+});
+yehBody.appendChild(yehTotalRow);
+function refreshYehDisplay(){
+  computeYehQuarterlyTotals();
+  yehRows.forEach((row, i) => {
+    const refs = yehProfitRefs[i];
+    if (row.profit === null){ refs.profitBdi.textContent = "–"; refs.profitTd.classList.add("cell-empty"); }
+    else { refs.profitBdi.textContent = fmtUSD(row.profit); refs.profitTd.classList.remove("cell-empty"); }
+  });
+  yehQuarterRefs.forEach((refs, q) => { refs.totBdi.textContent = fmtUSD(yehRows[q * 3].totalDividend); });
+  const yehKnownProfits = yehRows.filter(r => r.profit !== null);
+  yehTotalCells[0].textContent = fmtUSD(yehRows.reduce((s, r) => s + (r.revenue || 0), 0));
+  yehTotalCells[1].textContent = fmtUSD(yehRows.reduce((s, r) => s + (r.breakeven || 0), 0));
+  yehTotalCells[2].textContent = fmtUSD(yehKnownProfits.reduce((s, r) => s + r.profit, 0));
+  yehTotalCells[3].textContent = fmtUSD(yehRows.reduce((s, r) => s + (r.totalDividend || 0), 0));
+}
+refreshYehDisplay();
+
+// ================= Company cards (August) =================
+const grid = document.getElementById("companyGrid");
+const augTotal = COMPANIES.reduce((sum, c) => {
+  const v = MONTHLY_TOTALS.companies[c.key].totals[augIdx];
+  return sum + (v !== null ? v : 0);
+}, 0);
+COMPANIES.forEach(c => {
+  const v = MONTHLY_TOTALS.companies[c.key].totals[augIdx];
+  const share = (v !== null && augTotal) ? (v/augTotal*100) : 0;
+  const div = document.createElement("div");
+  div.className = "company-card";
+  div.style.setProperty("--bar-color", c.color);
+  const nameEl = document.createElement("p"); nameEl.className = "name"; nameEl.textContent = c.name;
+  const subEl = document.createElement("p"); subEl.className = "subname"; subEl.textContent = c.sub;
+  const totEl = document.createElement("p"); totEl.className = "total tab";
+  const bdiT = document.createElement("bdi"); bdiT.textContent = v === null ? "No data" : fmtUSD(v); totEl.appendChild(bdiT);
+  const shareEl = document.createElement("p"); shareEl.className = "share";
+  shareEl.textContent = v === null ? "—" : (Math.round(share) + "% of total");
+  const barWrap = document.createElement("div"); barWrap.className = "accbar";
+  const barFill = document.createElement("span"); barFill.style.width = Math.max(share,2) + "%";
+  barWrap.appendChild(barFill);
+  div.append(nameEl, subEl, totEl, shareEl, barWrap);
+  grid.appendChild(div);
+});
+
+// ================= Monthly detail table =================
+const FLAG_COLS = {
+  "ESF|Chase": [7],
+  "YE HOLDINGS - ISL|FIBI (USD deposit)": [6, 7],
+  "ALGOBRIX|Bank Hapoalim (USD)": [0, 1, 2, 3],
+};
+const headRow = document.getElementById("tableHeadRow");
+MONTH_LABELS.forEach((m, i) => {
+  const th = document.createElement("th"); th.textContent = m; th.className = "tab"; th.dataset.m = i;
+  headRow.appendChild(th);
+});
+
+const tbody = document.getElementById("tableBody");
+ROWS.slice().sort((a,b) => {
+  const ai = COMPANIES.findIndex(c => c.key === a.company), bi = COMPANIES.findIndex(c => c.key === b.company);
+  return ai - bi;
+}).forEach(r => {
+  const c = COMPANY_MAP[r.company];
+  const tr = document.createElement("tr");
+
+  const tdCo = document.createElement("td");
+  const dot = document.createElement("span"); dot.className = "co-dot"; dot.style.background = c.color;
+  tdCo.appendChild(dot);
+  const coText = document.createElement("bdi"); coText.textContent = c.name; tdCo.appendChild(coText);
+
+  const tdBank = document.createElement("td");
+  const bdiBank = document.createElement("bdi"); bdiBank.textContent = r.bank; tdBank.appendChild(bdiBank);
+  if (r.note) { tdBank.title = r.note; tdBank.classList.add("cell-flag"); }
+
+  const tdCur = document.createElement("td"); tdCur.textContent = r.currency;
+
+  tr.append(tdCo, tdBank, tdCur);
+
+  const key = r.company + "|" + r.bank;
+  const flagCols = FLAG_COLS[key] || [];
+
+  r.usd.forEach((v, i) => {
+    const td = document.createElement("td"); td.className = "num tab"; td.dataset.m = i;
+    const bdiV = document.createElement("bdi");
+    const isFlagged = flagCols.includes(i);
+    if (v === null){
+      bdiV.textContent = "–"; td.classList.add("cell-empty");
+    } else {
+      bdiV.textContent = fmtUSD(v);
+      const nv = r.native[i];
+      const showNative = r.currency !== "USD";
+      const info = () => (showNative ? `<div class="tt-row"><span>Native</span><span class="tt-val"><bdi>${fmtNative(nv, r.currency)}</bdi></span></div>` : "") +
+        (isFlagged ? `<div class="tt-row"><span class="tt-flag">${r.note}</span></div>` : "");
+      if (showNative || isFlagged) {
+        td.addEventListener("pointermove", e => showTT(e, info()));
+        td.addEventListener("pointerleave", hideTT);
+      }
+      if (isFlagged) td.classList.add("cell-flag");
+    }
+    td.appendChild(bdiV);
+    tr.appendChild(td);
+  });
+
+  tbody.appendChild(tr);
+});
+document.getElementById("rowCountHint").textContent = ROWS.length + " accounts × 8 months · all amounts converted to USD at that month's rate · hover a non-USD row's value for the native-currency amount (Ccy column)";
+document.getElementById("subtitleLine").textContent = COMPANIES.length + " companies · " + ROWS.length + " bank/processor accounts · reconstructed month-end balances from real statements";
+
+// ================= Month filter (detail table) =================
+let visibleMonths = new Set(MONTH_LABELS.map((_, i) => i));
+const monthFilterEl = document.getElementById("monthFilter");
+function applyMonthFilter(){
+  document.querySelectorAll('#tableHeadRow [data-m], #tableBody [data-m]').forEach(el => {
+    el.style.display = visibleMonths.has(Number(el.dataset.m)) ? "" : "none";
+  });
+  monthFilterEl.querySelectorAll(".month-chip:not(.all)").forEach(btn => {
+    btn.classList.toggle("active", visibleMonths.has(Number(btn.dataset.m)));
+  });
+  const allBtn = monthFilterEl.querySelector(".month-chip.all");
+  allBtn.classList.toggle("active", visibleMonths.size === MONTH_LABELS.length);
+}
+const allChip = document.createElement("button");
+allChip.type = "button"; allChip.className = "month-chip all active"; allChip.textContent = "All months";
+allChip.addEventListener("click", () => {
+  visibleMonths = new Set(MONTH_LABELS.map((_, i) => i));
+  applyMonthFilter();
+});
+monthFilterEl.appendChild(allChip);
+MONTH_LABELS.forEach((m, i) => {
+  const chip = document.createElement("button");
+  chip.type = "button"; chip.className = "month-chip active"; chip.textContent = m; chip.dataset.m = i;
+  chip.addEventListener("click", () => {
+    if (visibleMonths.has(i)) visibleMonths.delete(i); else visibleMonths.add(i);
+    if (visibleMonths.size === 0) visibleMonths.add(i); // keep at least one month visible
+    applyMonthFilter();
+  });
+  monthFilterEl.appendChild(chip);
+});
+
+// ================= Currency exposure (August) =================
+const currEl = document.getElementById("currencyChart");
+const byCurrency = {};
+ROWS.forEach(r => {
+  const n = r.native[augIdx];
+  if (n === null) return;
+  byCurrency[r.currency] = byCurrency[r.currency] || { native:0, usd:0 };
+  byCurrency[r.currency].native += n;
+  byCurrency[r.currency].usd += r.usd[augIdx];
+});
+const currOrder = Object.entries(byCurrency).sort((a,b) => b[1].usd - a[1].usd);
+const maxCurUSD = Math.max(...currOrder.map(([,v]) => v.usd));
+currOrder.forEach(([cur, v]) => {
+  const pct = maxCurUSD ? (v.usd / maxCurUSD * 100) : 0;
+  const row = document.createElement("div"); row.className = "barrow";
+  row.innerHTML = `
+    <div class="lbl"><bdi>${cur}</bdi></div>
+    <div class="curr-track"><div class="curr-fill" tabindex="0" style="width:${Math.max(pct,1.5)}%"></div></div>
+    <div class="val tab"><bdi>${fmtUSD(v.usd)}</bdi></div>
+  `;
+  const fillEl = row.querySelector(".curr-fill");
+  const info = () => `<div class="tt-row"><span class="tt-val">${fmtUSD(v.usd)}</span></div><div class="tt-row"><span>Native</span><span class="tt-val"><bdi>${fmtNative(v.native, cur)}</bdi></span></div>`;
+  fillEl.addEventListener("pointermove", e => showTT(e, info()));
+  fillEl.addEventListener("pointerleave", hideTT);
+  fillEl.addEventListener("focus", e => showTT(e, info()));
+  fillEl.addEventListener("blur", hideTT);
+  currEl.appendChild(row);
+});
+</script>
