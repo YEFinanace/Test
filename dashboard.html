@@ -132,6 +132,10 @@
   .cell-unpaid bdi{ color:#d03b3b; }
   .cell-cumulative{ display:block; font-size:10.5px; font-weight:400; color:var(--ink-muted); margin-top:2px; }
   .th-sub{ font-weight:400; opacity:.7; }
+  #balanceOverviewTable th:first-child, #balanceOverviewTable td:first-child{ text-align:start; white-space:normal; min-width:220px; position:sticky; left:0; background:var(--surface-2); z-index:1; }
+  #balanceOverviewTable tbody td:first-child{ background:var(--surface); font-weight:600; }
+  #balanceOverviewTable thead th:first-child{ z-index:2; }
+  #balanceOverviewTable th:not(:first-child), #balanceOverviewTable td:not(:first-child){ text-align:end; }
   .cell-flag{ text-decoration:underline dotted var(--warn); text-decoration-thickness:1px; text-underline-offset:3px; cursor:help; }
 
   .notes{ background:var(--surface); border:1px solid var(--hair); border-radius:14px; box-shadow:var(--shadow); padding:18px 22px; }
@@ -204,16 +208,10 @@
       <span class="hint" id="dividendsHint">—</span>
     </div>
     <div class="table-scroll">
-      <table>
+      <table id="balanceOverviewTable">
         <thead>
-          <tr>
-            <th>Month</th>
-            <th>Total Bank Balance<br>(Actual)</th>
-            <th>Dividends Paid<br>This Month · YEWLS</th>
-            <th>Dividends Paid<br>This Month · YEH<br><span class="th-sub">[Cumulative]</span></th>
-            <th>Dividends Planned<br>(Not Yet Paid) · YEWLS</th>
-            <th>Dividends Planned<br>(Not Yet Paid) · YEH</th>
-            <th>Total Cash After<br>Unpaid Dividends</th>
+          <tr id="dividendsHeadRow">
+            <th></th>
           </tr>
         </thead>
         <tbody id="dividendsBody"></tbody>
@@ -594,44 +592,64 @@ function computeUnpaidCumulative(){
     return running;
   });
 }
+// Table rotated 90°: months run across the columns, metrics run down the rows.
+const METRIC_ROWS = [
+  { key: "actual", label: "Total Bank Balance (Actual)" },
+  { key: "paidYEWLS", label: "Dividends Paid This Month · YEWLS" },
+  { key: "paidYEH", label: "Dividends Paid This Month · YEH" },
+  { key: "plannedYEWLS", label: "Dividends Planned (Not Yet Paid) · YEWLS" },
+  { key: "plannedYEH", label: "Dividends Planned (Not Yet Paid) · YEH" },
+  { key: "after", label: "Total Cash After Unpaid Dividends" },
+];
+const divHeadRow = document.getElementById("dividendsHeadRow");
+DIVIDEND_MONTHS.forEach(m => {
+  const th = document.createElement("th"); th.className = "tab"; th.textContent = monthLabel(m);
+  divHeadRow.appendChild(th);
+});
 const divBody = document.getElementById("dividendsBody");
-const boRefs = [];
+const boRefs = DIVIDEND_MONTHS.map(() => ({}));
 const boActual = DIVIDEND_MONTHS.map((m, i) => monthGrandTotal(i));
 const boYehCumSpans = [];
 const boUnpaidCumulativeInit = computeUnpaidCumulative();
+const metricTrs = {};
+METRIC_ROWS.forEach(metric => {
+  const tr = document.createElement("tr");
+  const labelTd = document.createElement("td");
+  if (metric.key === "paidYEH") {
+    labelTd.append(metric.label + " ", Object.assign(document.createElement("span"), { className: "th-sub", textContent: "[Cumulative]" }));
+  } else {
+    labelTd.textContent = metric.label;
+  }
+  tr.appendChild(labelTd);
+  metricTrs[metric.key] = tr;
+  divBody.appendChild(tr);
+});
 DIVIDEND_MONTHS.forEach((m, i) => {
   const actual = boActual[i];
   const { paidYEWLS, paidYEH, plannedYEWLS, plannedYEH } = splitPaidPlanned(m);
   const after = actual === null ? null : actual - boUnpaidCumulativeInit[i];
-  const tr = document.createElement("tr");
-  const monthTd = document.createElement("td");
-  monthTd.className = "tab"; monthTd.textContent = monthLabel(m);
-  tr.appendChild(monthTd);
-  const cellDefs = [actual, paidYEWLS, paidYEH, plannedYEWLS, plannedYEH, after];
-  const rowRefs = {};
-  const refKeys = ["actual", "paidYEWLS", "paidYEH", "plannedYEWLS", "plannedYEH", "after"];
-  cellDefs.forEach((val, ci) => {
+  const values = { actual, paidYEWLS, paidYEH, plannedYEWLS, plannedYEH, after };
+  METRIC_ROWS.forEach(metric => {
+    const val = values[metric.key];
     const td = document.createElement("td"); td.className = "num tab";
     const bdiV = document.createElement("bdi");
     if (val === null || val === undefined){
       bdiV.textContent = "–"; td.classList.add("cell-empty");
     } else {
       bdiV.textContent = fmtUSD(val);
-      if (UNPAID_REF_KEYS.has(refKeys[ci])) td.classList.add("cell-unpaid");
+      if (UNPAID_REF_KEYS.has(metric.key)) td.classList.add("cell-unpaid");
     }
     td.appendChild(bdiV);
-    tr.appendChild(td);
-    rowRefs[refKeys[ci]] = { bdi: bdiV, td };
+    metricTrs[metric.key].appendChild(td);
+    boRefs[i][metric.key] = { bdi: bdiV, td };
   });
-  boRefs.push(rowRefs);
   let cumSpan = null;
   if (paidYEH !== null){
     cumSpan = document.createElement("span");
     cumSpan.className = "cell-cumulative tab";
-    rowRefs.paidYEH.td.appendChild(cumSpan);
+    boRefs[i].paidYEH.td.appendChild(cumSpan);
   }
   boYehCumSpans.push(cumSpan);
-  divBody.appendChild(tr);
 });
 function refreshYehCumulativeDisplay(){
   const cumulative = computeYehCumulative();
